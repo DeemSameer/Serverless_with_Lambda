@@ -61,3 +61,40 @@ export async function handler(event) {
   
   }
 }
+
+
+
+///////2
+export function getUserId(authorizationHeader) {
+
+  const split = authorizationHeader.split(' ')
+  const jwtToken = split[1]
+
+  const decodedJwt = jsonwebtoken.decode(jwtToken)
+  return decodedJwt.sub
+}
+
+
+export async function handler(event) {
+  console.log('Processing event: ', event)
+  const itemId = uuidv4()
+
+  const parsedBody = JSON.parse(event.body)
+
+  // Extracting user ID using "getUserId"
+  const authorization = event.headers.Authorization
+  const userId = getUserId(authorization)
+
+  const newItem = {
+    id: itemId,
+    // Adding user ID to the stored item
+    userId,
+    ...parsedBody
+  }
+
+  await dynamoDbClient.put({
+    TableName: groupsTable,
+    Item: newItem
+  })
+  // ...
+}
