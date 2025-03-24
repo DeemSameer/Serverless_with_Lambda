@@ -42,12 +42,17 @@ export async function handler(event) {
   }
 }
 
-async function verifyToken(authHeader) {
-  const token = getToken(authHeader)
-  const jwt = jsonwebtoken.decode(token, { complete: true })
-
   // TODO: Implement token verification
-  return undefined;
+async function verifyToken(authHeader) {
+  try{
+    const token = getToken(authHeader)
+    const jwt = jsonwebtoken.decode(token, { complete: true })
+    const certificate = '...'
+    return jsonwebotoken.verify(jwt, certificate, { algorithms: ['RS256'] })
+  }catch{
+    logger.error('Token verification error', { error: error.message });
+    return null;
+  }
 }
 
 function getToken(authHeader) {
