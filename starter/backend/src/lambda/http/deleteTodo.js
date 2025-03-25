@@ -1,9 +1,12 @@
 
 import { deleteItem } from '../../businessLogic/todos.mjs'
+import { getUserId } from '../utils.mjs'
 
 export async function handler(event) {
   const todoId = event.pathParameters.todoId
-  await deleteItem(todoId);
+  const userId = getUserId(event)
+  
+  await deleteItem(todoId,userId);
 
   return {
     statusCode: 201,

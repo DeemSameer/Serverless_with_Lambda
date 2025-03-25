@@ -55,3 +55,12 @@ export async function getItemDBDB(itemId){
         Item: itemId
       })    
 }
+
+export async function getItemById(){
+  dynamoDbDocument.get({
+    TableName: groupsTable,//TODO  
+    Key: {
+      id: todoId
+    }
+  })
+}

@@ -3,18 +3,17 @@ import { getItemDB } from '../dataLayer/todosAccess.mjs'
 import { deleteItemDB } from '../dataLayer/todosAccess.mjs'
 import { getItems } from '../dataLayer/todosAccess.mjs'
 import { updateItemDB } from '../dataLayer/todosAccess.mjs'
+import { getItemById } from '../dataLayer/todosAccess.mjs'
 
-const jwt = require('jsonwebtoken');
 
-
-// export class TodosLogic{
-    // jwt = require('jsonwebtoken');
-    
-
-    export async function createItem(newTodo){
+    export async function createItem(newTodo, userId){
         //attache it to user id + add today date and done = false 
         const itemId = uuidv4()
-       
+        newTodo.done=false 
+        newTodo.createdAt = new Date().toISOString()
+        newTodo.userId = userId
+        newTodo.attachmentUrl = '' 
+
          const newItem = {
            id: itemId,
            ...newTodo
@@ -23,12 +22,17 @@ const jwt = require('jsonwebtoken');
          return await createItemDB(newItem);
    }
 
-   export async function  deleteItem(id){
+   export async function  deleteItem(id, userId){
     //check if item exisits 
     const item = await getItemDB(id);
-    if(item)
-    //delete item
-        await deleteItemDB(id)
+    //authorize user 
+    if(item.userId === userId){
+      if(item)
+        //delete item
+            await deleteItemDB(id)
+    }else 
+      console.log('Un-authorized access.')
+    
    }
 
    export async function  getUserItems(userId){
@@ -38,30 +42,21 @@ const jwt = require('jsonwebtoken');
    
   
   export async function  idExists(todoId) {
-    const result = await dynamoDbDocument.get({
-      TableName: groupsTable,//TODO  
-      Key: {
-        id: todoId
-      }
-    })
+    const result = await getItemById(todoId)
   
-    console.log('Get group: ', result)
+    console.log('Get todo: ', result)
     return !!result.Item
   }
   
   export async function  updateItem(todoItem, todoId, userId) {
-    //userId for unauthrized access 
-    //done=true and date change?
-    return await updateItemDB(todoItem);
+
+    //check if item exisits 
+    const item = await getItemDB(todoId);
+    //authorize user 
+    if(item.userId === userId){
+      if(item)
+        //delete item
+            await updateItemDB(todoItem)
+    }else 
+      console.log('Un-authorized access.')
   }
-
-  export function validateToken(authorizationHeader){
-    const split = authorizationHeader.split(' ')
-    const jwtToken = split[1]
-  
-    const decodedJwt = jsonwebtoken.decode(jwtToken)
-    return decodedJwt.sub
-  }
-
-// }
-
