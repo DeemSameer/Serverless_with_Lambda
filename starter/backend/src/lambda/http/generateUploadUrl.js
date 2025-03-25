@@ -4,27 +4,20 @@
    "uploadUrl": "https://s3-bucket-name.s3.eu-west-2.amazonaws.com/image.png"
 }
 */
+import{getPreSignedUrl} from '../../fileStorage/attachmentUtils.mjs'
 
 export async function handler(event) {
   const todoId = event.pathParameters.todoId
-
-  // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-
-  const s3Client = new S3Client()
-
-  const groupsTable = process.env.IMAGES_S3_BUCKET
-
-// The result URL will allow to perform the PUT operation
-const command = new PutObjectCommand({
-  Bucket:  's3-bucket-name', 
-  Key: 'todoId'
-})
-
-
-const presignedUrl = await getSignedUrl(s3Client, command, {
-  expiresIn: 300 // A URL is only valid for 5 minutes
-})
-
-  return presignedUrl
+  const presignedUrl = await getPreSignedUrl(todoId); 
+  return {
+    statusCode: 201,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: JSON.stringify({
+      presignedUrl
+    })
+  }
 }
 

@@ -19,7 +19,7 @@ export async function createItemDB(newItem){
 }
 
 
-export async function updateItem(newItem){
+export async function updateItemDB(newItem){
     return await dynamoDbDocument.updateItem({
         TableName: todoTable,
         IndexName: indexTable,
@@ -27,16 +27,29 @@ export async function updateItem(newItem){
       })    
 }
 
-export async function getItem(userId){
-    return await dynamoDbDocument.query({
+export async function getItems(userId){
+    return await this.dynamoDbDocument
+      .query({
         TableName: todoTable,
         IndexName: indexTable,
-        Item: newItem
+        KeyConditionExpression: 'userId = :userId',
+        ExpressionAttributeValues: {
+          ':userId': userId
+        }
+      })
+      .promise();
+}
+
+export async function deleteItemDB(itemId){
+    return await dynamoDbDocument.deleteItem({
+        TableName: todoTable,
+        IndexName: indexTable,
+        Item: itemId
       })    
 }
 
-export async function deleteItem(itemId){
-    return await dynamoDbDocument.deleteItem({
+export async function getItemDBDB(itemId){
+    return await dynamoDbDocument.getItem({
         TableName: todoTable,
         IndexName: indexTable,
         Item: itemId

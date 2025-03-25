@@ -10,6 +10,10 @@ The ID of an item that should be updated is passed as a URL parameter. It should
 
 */
   // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
+
+  import { updateItem } from '../../businessLogic/todos.mjs'
+  import { idExists } from '../../businessLogic/todos.mjs'
+
 export async function handler(event) {
   const todoId = event.pathParameters.todoId
   const updatedTodo = JSON.parse(event.body)
@@ -29,7 +33,7 @@ export async function handler(event) {
     }
   }
 
-  const todo = await updateTodo(todoId)
+  const todo = await updateItem(updatedTodo)
 
   return {
     statusCode: 201,
@@ -43,27 +47,4 @@ export async function handler(event) {
 
 }
 
-async function idExists(todoId) {
-  const result = await dynamoDbDocument.get({
-    TableName: groupsTable,//TODO  
-    Key: {
-      id: todoId
-    }
-  })
 
-  console.log('Get group: ', result)
-  return !!result.Item
-}
-
-async function updateTodo(todoId) {
-  const result = await dynamoDbDocument.query({
-    TableName: imagesTable,//TODO change 
-    KeyConditionExpression: 'todoId = :todoId',
-    ExpressionAttributeValues: {
-      ':todoId': todoId
-    },
-    ScanIndexForward: false
-  })
-
-  return result.Items
-}
