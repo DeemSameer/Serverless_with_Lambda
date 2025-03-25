@@ -49,7 +49,8 @@ export class TodosLogic{
     return !!result.Item
   }
   
-  async updateItem(todoItem) {
+  async updateItem(todoItem, todoId, userId) {
+    //userId for unauthrized access 
     //done=true and date change?
     return await updateItemDB(todoItem);
   }

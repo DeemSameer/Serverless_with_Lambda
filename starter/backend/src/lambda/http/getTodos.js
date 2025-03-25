@@ -1,12 +1,10 @@
 //return all TODOs for a current user. A user id can be extracted from a JWT token that is sent by the frontend.
 import { getUserItems } from '../../businessLogic/todos.mjs'
-import { validateToken } from '../../businessLogic/todos.mjs'
+import { getUserId } from '../utils.mjs'
 
 export async function handler(event) {
   // TODO: Get all TODO items for a current user
-  // const userId = extractUserId(event);
-  const authorization = event.headers.Authorization
-  const userId = await validateToken(authorization)
+  const userId = await getUserId(event)
 
 if(userId){
   const result = await getUserItems(userId); 
@@ -15,7 +13,8 @@ if(userId){
     return {
       statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
       },
       body: JSON.stringify({ items }),
     };
@@ -27,27 +26,3 @@ if(userId){
   
   }
 }
-
-
-
-///////2
-// export function getUserId(authorizationHeader) {
-
-//   const split = authorizationHeader.split(' ')
-//   const jwtToken = split[1]
-
-//   const decodedJwt = jsonwebtoken.decode(jwtToken)
-//   return decodedJwt.sub
-// }
-
-
-// export async function handler(event) {
-//   console.log('Processing event: ', event)
-//   // const itemId = uuidv4()
-
-//   const parsedBody = JSON.parse(event.body)
-
-//   // Extracting user ID using "getUserId"
-//   const authorization = event.headers.Authorization
-//   await 
-// }
