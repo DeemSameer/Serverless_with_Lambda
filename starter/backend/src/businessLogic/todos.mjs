@@ -4,14 +4,14 @@ import { deleteItemDB } from '../dataLayer/todosAccess.mjs'
 import { getItems } from '../dataLayer/todosAccess.mjs'
 import { updateItemDB } from '../dataLayer/todosAccess.mjs'
 
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 
-export class TodosLogic{
-    jwt = require('jsonwebtoken');
+// export class TodosLogic{
+    // jwt = require('jsonwebtoken');
     
 
-    async createItem(newTodo){
+    export async function createItem(newTodo){
         //attache it to user id + add today date and done = false 
         const itemId = uuidv4()
        
@@ -23,7 +23,7 @@ export class TodosLogic{
          return await createItemDB(newItem);
    }
 
-   async deleteItem(id){
+   export async function  deleteItem(id){
     //check if item exisits 
     const item = await getItemDB(id);
     if(item)
@@ -31,13 +31,13 @@ export class TodosLogic{
         await deleteItemDB(id)
    }
 
-   async getUserItems(userId){
+   export async function  getUserItems(userId){
         return await getItems(userId);
    }
 
    
   
-  async idExists(todoId) {
+  export async function  idExists(todoId) {
     const result = await dynamoDbDocument.get({
       TableName: groupsTable,//TODO  
       Key: {
@@ -49,13 +49,13 @@ export class TodosLogic{
     return !!result.Item
   }
   
-  async updateItem(todoItem, todoId, userId) {
+  export async function  updateItem(todoItem, todoId, userId) {
     //userId for unauthrized access 
     //done=true and date change?
     return await updateItemDB(todoItem);
   }
 
-  validateToken(authorizationHeader){
+  export function validateToken(authorizationHeader){
     const split = authorizationHeader.split(' ')
     const jwtToken = split[1]
   
@@ -63,5 +63,5 @@ export class TodosLogic{
     return decodedJwt.sub
   }
 
-}
+// }
 
