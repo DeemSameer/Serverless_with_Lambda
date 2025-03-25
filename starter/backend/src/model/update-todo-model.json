@@ -20,11 +20,9 @@
       }
     },
     "required": [
-        "createdAt",
         "name",
         "dueDate",
-        "done",
-        "attachmentUrl"
+        "done"
     ],
     "additionalProperties": false
   }

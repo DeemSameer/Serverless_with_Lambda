@@ -20,7 +20,7 @@ export async function createItemDB(newItem){
 }
 
 
-export async function updateItemDB(newItem, todoId){
+export async function updateItemDB(newItem, todoId, userId){
   const updateExpression = 'SET name = :name, dueDate = :dueDate, done = :done';//, attachmentUrl = :attachmentUrl
   const expressionAttributeValues = {
     ':name': newItem.name,
@@ -32,7 +32,8 @@ export async function updateItemDB(newItem, todoId){
   return await dynamoDbDocument.update({
     TableName: todoTable,
     Key: {
-      id: todoId,
+      todoId,
+      userId
     },
     UpdateExpression: updateExpression,
     ExpressionAttributeValues: expressionAttributeValues 
@@ -51,20 +52,22 @@ export async function getItems(userId){
       });
 }
 
-export async function deleteItemDB(itemId){
+export async function deleteItemDB(todoId, userId){
     return await dynamoDbDocument.delete({
         TableName: todoTable,
         Key: {
-          id: itemId
+          todoId, 
+          userId
         }
       }); 
 }
 
-export async function getItemDB(itemId){
+export async function getItemDB(todoId, userId){
     return await dynamoDbDocument.get({
         TableName: todoTable,
         Key: {
-          id: itemId
+          todoId,
+          userId
         }
       });
 }

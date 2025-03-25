@@ -1,6 +1,8 @@
 import { createItemDB, getItemDB, deleteItemDB, getItems, updateItemDB } from '../dataLayer/todosAccess.mjs'
 import { v4 as uuidv4 } from 'uuid'; // or import uuid from 'uuid';
 
+const logger = createLogger('todos'); 
+
 
 export async function createItem(newTodo, userId) {
   const itemId = uuidv4();
@@ -12,20 +14,23 @@ export async function createItem(newTodo, userId) {
     userId: userId,
     attachmentUrl: '',
   };
+  logger.info('Adding todo item', {
+    newItem
+  });
   return await createItemDB(newItem);
 }
 
-export async function deleteItem(id, userId) {
+export async function deleteItem(todoId, userId) {
   //check if item exisits 
-  const item = await getItemDB(id);
+  const item = await getItemDB(todoId, userId);
   //authorize user 
   if (item.userId === userId) {
     if (item)
       //delete item
-      await deleteItemDB(id);
+      await deleteItemDB(todoId, userId);
+      logger.info('delete item with id: '+id);
   } else
-    console.log('Un-authorized access.');
-
+  logger.warn('Un-authorized access.');
 }
 
 export async function getUserItems(userId) {
@@ -33,23 +38,14 @@ export async function getUserItems(userId) {
 }
 
 
-
-export async function idExists(todoId) {
-  const result = await getItemDB(todoId);
-
-  console.log('Get todo: ', result);
-  // return !!result.Item
-  return !!result?.Item;
-}
-
 export async function updateItem(todoItem, todoId, userId) {
-    const item = await getItemDB(todoId);
+    const item = await getItemDB(todoId, userId);
     if (!item) {
-      console.log('Item not found.');
+      logger.warn('Item not found.');
     }
     if (item.userId !== userId) {
-      console.log('Unauthorized access.');
+      logger.warn('Unauthorized access.');
     }
-    await updateItemDB(todoItem, todoId);
+    await updateItemDB(todoItem, todoId, userId);
  
 }
