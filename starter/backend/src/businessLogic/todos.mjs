@@ -1,9 +1,4 @@
-import { createItemDB } from '../dataLayer/todosAccess.mjs'
-import { getItemDB } from '../dataLayer/todosAccess.mjs'
-import { deleteItemDB } from '../dataLayer/todosAccess.mjs'
-import { getItems } from '../dataLayer/todosAccess.mjs'
-import { updateItemDB } from '../dataLayer/todosAccess.mjs'
-import { getItemById } from '../dataLayer/todosAccess.mjs'
+import { createItemDB, getItemDB, deleteItemDB, getItems, updateItemDB } from '../dataLayer/todosAccess.mjs'
 import { v4 as uuidv4 } from 'uuid'; // or import uuid from 'uuid';
 
 
@@ -40,7 +35,7 @@ export async function getUserItems(userId) {
 
 
 export async function idExists(todoId) {
-  const result = await getItemById(todoId);
+  const result = await getItemDB(todoId);
 
   console.log('Get todo: ', result);
   // return !!result.Item

@@ -28,9 +28,6 @@ export async function updateItemDB(newItem, todoId){
     ':done': newItem.done,
     // ':attachmentUrl': newItem.attachmentUrl,
   };
-  // const expressionAttributeNames = {//for reserved words in dynamodb
-  //   '#name': 'name',
-  // };
 
   return await dynamoDbDocument.update({
     TableName: todoTable,
@@ -39,12 +36,11 @@ export async function updateItemDB(newItem, todoId){
     },
     UpdateExpression: updateExpression,
     ExpressionAttributeValues: expressionAttributeValues 
-    // ,ExpressionAttributeNames: expressionAttributeNames
   }); 
 }
 
 export async function getItems(userId){
-    return await this.dynamoDbDocument
+    return await dynamoDbDocument
       .query({
         TableName: todoTable,
         IndexName: indexTable,
@@ -52,29 +48,23 @@ export async function getItems(userId){
         ExpressionAttributeValues: {
           ':userId': userId
         }
-      })
-      .promise();
+      });
 }
 
 export async function deleteItemDB(itemId){
-    return await dynamoDbDocument.deleteItem({
+    return await dynamoDbDocument.delete({
         TableName: todoTable,
-        Item: itemId
-      })    
+        Key: {
+          id: itemId
+        }
+      }); 
 }
 
-export async function getItemDBDB(itemId){
-    return await dynamoDbDocument.getItem({
+export async function getItemDB(itemId){
+    return await dynamoDbDocument.get({
         TableName: todoTable,
-        Item: itemId
-      })    
-}
-
-export async function getItemById(){
-  dynamoDbDocument.get({
-    TableName: groupsTable,//TODO  
-    Key: {
-      id: todoId
-    }
-  })
+        Key: {
+          id: itemId
+        }
+      });
 }
