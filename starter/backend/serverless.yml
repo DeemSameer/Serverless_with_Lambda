@@ -10,7 +10,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
-  stage: ${opt:stage, 'prod'}
+  stage: ${opt:stage, 'staging'}
   region: ${opt:region, 'us-east-1'}
   environment:
       TODOS_TABLE: Todos-${self:provider.stage}
@@ -21,26 +21,26 @@ provider:
     lambda: true
     apiGateway: true 
 
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:Scan
-            - dynamodb:PutItem
-            - dynamodb:Query
-            - dynamodb:DeleteItem
-            - dynamodb:GetItem
-          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-        - Effect: Allow
-          Action:
-            - s3:PutObject
-            - s3:GetObject
-          Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}:/*
-        - Effect: Allow
-          Action:
-            - cloudformation:DescribeStacks
-          Resource: arn:aws:cloudformation:us-east-1:428679994835:stack/serverless-todo-app-dev/*
+  # iam:
+  #   role:
+  #     statements:
+  #       - Effect: Allow
+  #         Action:
+  #           - dynamodb:Scan
+  #           - dynamodb:PutItem
+  #           - dynamodb:Query
+  #           - dynamodb:DeleteItem
+  #           - dynamodb:GetItem
+  #         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+  #       - Effect: Allow
+  #         Action:
+  #           - s3:PutObject
+  #           - s3:GetObject
+  #         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}:/*
+  #       - Effect: Allow
+  #         Action:
+  #           - cloudformation:DescribeStacks
+  #         Resource: arn:aws:cloudformation:us-east-1:428679994835:stack/serverless-todo-app-dev/*
 
 
 
@@ -65,7 +65,7 @@ functions:
         Action:
           - dynamodb:GetItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -91,7 +91,7 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -117,7 +117,7 @@ functions:
         Action:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -140,7 +140,7 @@ functions:
         Action:
           - dynamodb:GetItem
           - dynamodb:DeleteItem
-        Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -165,7 +165,7 @@ functions:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
       - Effect: Allow
         Action:
           - s3:PutObject
@@ -237,6 +237,6 @@ resources:
             - Sid: PublicReadForGetBucketObjects
               Effect: Allow
               Principal: '*'
-              Action: 's3:GetObject'
+              Action: '*'
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
