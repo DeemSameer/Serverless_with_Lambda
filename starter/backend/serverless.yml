@@ -10,12 +10,12 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'prod'}
   region: ${opt:region, 'us-east-1'}
   environment:
       TODOS_TABLE: Todos-${self:provider.stage}
       TODOS_CREATED_AT_INDEX: CreatedAtIndex
-      IMAGES_S3_BUCKET: backend-images-${self:provider.stage}
+      IMAGES_S3_BUCKET: backend-images-123-jbjsvjd-uni-que-tettetetet-${self:provider.stage}
       SIGNED_URL_EXPIRATION: 300
   tracing: 
     lambda: true
@@ -66,6 +66,12 @@ functions:
           - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource:
+          - "*"
       
 
   # TODO: Configure this function
@@ -86,6 +92,12 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource:
+          - "*"
 
   # TODO: Configure this function
   UpdateTodo:
@@ -106,6 +118,12 @@ functions:
           - dynamodb:GetItem
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource:
+          - "*"
 
   # TODO: Configure this function
   DeleteTodo:
@@ -123,6 +141,12 @@ functions:
           - dynamodb:GetItem
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource:
+          - "*"
 
   # TODO: Configure this function
   GenerateUploadUrl:
@@ -133,6 +157,7 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
+
     iamRoleStatementsInherit: true
     iamRoleStatements:
       - Effect: Allow
@@ -145,6 +170,12 @@ functions:
         Action:
           - s3:PutObject
         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - "xray:PutTraceSegments"
+          - "xray:PutTelemetryRecords"
+        Resource:
+          - "*"
 
 resources:
   Resources:
@@ -194,6 +225,7 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 3000
+      
 
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
