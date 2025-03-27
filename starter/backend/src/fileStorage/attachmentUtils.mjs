@@ -18,3 +18,8 @@ export async function getPreSignedUrl(todoId){
   })
   return presignedUrl; 
 }
+
+export async function getAttachmentUrl(todoId) {
+  const s3Bucket = process.env.IMAGES_S3_BUCKET
+  return `https://${s3Bucket}.s3.amazonaws.com/${todoId}`;
+}

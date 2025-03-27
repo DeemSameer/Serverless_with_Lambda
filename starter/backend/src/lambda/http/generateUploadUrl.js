@@ -4,17 +4,18 @@
    "uploadUrl": "https://s3-bucket-name.s3.eu-west-2.amazonaws.com/image.png"
 }
 */
-import{getPreSignedUrl} from '../../fileStorage/attachmentUtils.mjs'
+import{getPreSignedUrl, getAttachmentUrl} from '../../fileStorage/attachmentUtils.mjs'
 import { setPreSignedUrl } from '../../businessLogic/todos.mjs'
 import { getUserId } from '../utils.mjs'
 
 export async function handler(event) {
   const todoId = event.pathParameters.todoId
   const presignedUrl = await getPreSignedUrl(todoId); 
+  const attachmentUrl = await getAttachmentUrl(todoId); 
   const userId = getUserId(event)
 
   const image = JSON.parse(event.body)
-  await setPreSignedUrl(userId, todoId, image, presignedUrl)
+  await setPreSignedUrl(userId, todoId, image, attachmentUrl)
 
   return {
     statusCode: 201,
