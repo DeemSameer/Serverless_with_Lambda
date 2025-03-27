@@ -7,13 +7,15 @@
 import{getPreSignedUrl, getAttachmentUrl} from '../../fileStorage/attachmentUtils.mjs'
 import { setPreSignedUrl } from '../../businessLogic/todos.mjs'
 import { getUserId } from '../utils.mjs'
+import {createLogger } from '../../utils/logger.mjs'
+const logger = createLogger('http'); 
 
 export async function handler(event) {
   const todoId = event.pathParameters.todoId
   const presignedUrl = await getPreSignedUrl(todoId); 
   const attachmentUrl = await getAttachmentUrl(todoId); 
   const userId = getUserId(event)
-
+  logger.info("upload image for todoid:"+todoId )
   // const image = JSON.parse(event.body)
   await setPreSignedUrl(userId, todoId, attachmentUrl)
 
