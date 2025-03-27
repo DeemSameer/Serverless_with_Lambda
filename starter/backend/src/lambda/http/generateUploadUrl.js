@@ -5,10 +5,17 @@
 }
 */
 import{getPreSignedUrl} from '../../fileStorage/attachmentUtils.mjs'
+import { setPreSignedUrl } from '../../businessLogic/todos.mjs'
+import { getUserId } from '../utils.mjs'
 
 export async function handler(event) {
   const todoId = event.pathParameters.todoId
   const presignedUrl = await getPreSignedUrl(todoId); 
+  const userId = getUserId(event)
+
+  const image = JSON.parse(event.body)
+  await setPreSignedUrl(userId, todoId, image, presignedUrl)
+
   return {
     statusCode: 201,
     headers: {

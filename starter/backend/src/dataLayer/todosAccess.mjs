@@ -77,3 +77,23 @@ export async function getItemDB(todoId, userId){
         }
       });
 }
+
+
+export async function addImageDB(userId, todoId, image, attachmentUrl){
+  const updateExpression = 'SET attachmentUrl = :attachmentUrl, image = :image'; 
+  const expressionAttributeValues = {
+    ':attachmentUrl': attachmentUrl,
+    ':image': image
+  };
+
+
+  return await dynamoDbDocument.update({
+    TableName: todoTable,
+    Key: {
+      todoId,
+      userId,
+    },
+    UpdateExpression: updateExpression,
+    ExpressionAttributeValues: expressionAttributeValues
+  });
+}

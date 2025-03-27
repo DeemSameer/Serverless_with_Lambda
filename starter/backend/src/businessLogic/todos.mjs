@@ -1,4 +1,4 @@
-import { createItemDB, getItemDB, deleteItemDB, getItems, updateItemDB } from '../dataLayer/todosAccess.mjs'
+import { createItemDB, getItemDB, deleteItemDB, getItems, updateItemDB, addImageDB } from '../dataLayer/todosAccess.mjs'
 import { v4 as uuidv4 } from 'uuid'; // or import uuid from 'uuid';
 import {createLogger } from '../utils/logger.mjs'
 
@@ -48,5 +48,11 @@ export async function updateItem(todoItem, todoId, userId) {
     //   logger.warn('Unauthorized access.');
     // }
     await updateItemDB(todoItem, todoId, userId);
+ 
+}
+
+
+export async function setPreSignedUrl(userId, todoId, image, url){
+  await addImageDB(userId, todoId, image,url);
  
 }
