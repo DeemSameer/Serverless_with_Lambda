@@ -1,14 +1,17 @@
 import { createItem } from '../../businessLogic/todos.mjs'
 import { getUserId } from '../utils.mjs'
+import {createLogger } from '../../utils/logger.mjs'
 
 
 export async function handler(event) {
   const newTodo = JSON.parse(event.body)
   console.log('Processing event: ', event)
   const userId = getUserId(event)
-
-  const newItem = await createItem(newTodo, userId);
-
+const logger = createLogger('http'); 
+  const todo = await createItem(newTodo, userId);
+  logger.info('newItem item', {
+    todo
+  });
   return {
     statusCode: 201,
     headers: {
@@ -16,7 +19,7 @@ export async function handler(event) {
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      newItem
+      todo
     })
   }
 }

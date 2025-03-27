@@ -12,16 +12,17 @@ const todoTable = process.env.TODOS_TABLE
 const indexTable = process.env.TODOS_CREATED_AT_INDEX
 
 
-export async function createItemDB(newItem){
-    return await dynamoDbDocument.put({
+export async function createItemDB(todo){
+    await dynamoDbDocument.put({
         TableName: todoTable,
-        Item: newItem
-      })    
+        Item: todo
+      });  
+      return todo; 
 }
 
 
-export async function updateItemDB(newItem, todoId, userId){
-  const updateExpression = 'SET name = :name, dueDate = :dueDate, done = :done';//, attachmentUrl = :attachmentUrl
+export async function updateItemDB(newItem, todoId, userId) {
+  const updateExpression = 'SET #n = :name, dueDate = :dueDate, done = :done'; 
   const expressionAttributeValues = {
     ':name': newItem.name,
     ':dueDate': newItem.dueDate,
@@ -29,22 +30,27 @@ export async function updateItemDB(newItem, todoId, userId){
     // ':attachmentUrl': newItem.attachmentUrl,
   };
 
+  const expressionAttributeNames = { // Add ExpressionAttributeNames
+    '#n': 'name', // Map #n to "name"
+  };
+
   return await dynamoDbDocument.update({
     TableName: todoTable,
     Key: {
       todoId,
-      userId
+      userId,
     },
     UpdateExpression: updateExpression,
-    ExpressionAttributeValues: expressionAttributeValues 
-  }); 
+    ExpressionAttributeValues: expressionAttributeValues,
+    ExpressionAttributeNames: expressionAttributeNames, // Add ExpressionAttributeNames
+  });
 }
 
 export async function getItems(userId){
     return await dynamoDbDocument
       .query({
         TableName: todoTable,
-        IndexName: indexTable,
+        // IndexName: indexTable,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
           ':userId': userId
