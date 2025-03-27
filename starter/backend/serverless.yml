@@ -10,7 +10,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
-  stage: ${opt:stage, 'staging'}
+  stage: ${opt:stage, 'production'}
   region: ${opt:region, 'us-east-1'}
   environment:
       TODOS_TABLE: Todos-${self:provider.stage}

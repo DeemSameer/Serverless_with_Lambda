@@ -19,7 +19,16 @@ const logger = createLogger('http');
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      todo
+      "item":{
+      "todoId":todo.todoId,
+      "userId":todo.userId,
+      "attachmentUrl":null,
+      "dueDate":todo.dueDate,
+      "createdAt":todo.createdAt,
+      "name":todo.name,
+      "done":todo.done
+      }
+      
     })
   }
 }
