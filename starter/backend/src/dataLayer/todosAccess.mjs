@@ -79,11 +79,11 @@ export async function getItemDB(todoId, userId){
 }
 
 
-export async function addImageDB(userId, todoId, image, attachmentUrl){
-  const updateExpression = 'SET attachmentUrl = :attachmentUrl, image = :image'; 
+export async function addImageDB(userId, todoId, attachmentUrl){
+  const updateExpression = 'SET attachmentUrl = :attachmentUrl'; //, image = :image
   const expressionAttributeValues = {
-    ':attachmentUrl': attachmentUrl,
-    ':image': image
+    ':attachmentUrl': attachmentUrl
+    // ,':image': image
   };
 
 

@@ -14,8 +14,8 @@ export async function handler(event) {
   const attachmentUrl = await getAttachmentUrl(todoId); 
   const userId = getUserId(event)
 
-  const image = JSON.parse(event.body)
-  await setPreSignedUrl(userId, todoId, image, attachmentUrl)
+  // const image = JSON.parse(event.body)
+  await setPreSignedUrl(userId, todoId, attachmentUrl)
 
   return {
     statusCode: 201,

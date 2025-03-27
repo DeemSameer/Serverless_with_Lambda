@@ -52,7 +52,7 @@ export async function updateItem(todoItem, todoId, userId) {
 }
 
 
-export async function setPreSignedUrl(userId, todoId, image, url){
-  await addImageDB(userId, todoId, image,url);
+export async function setPreSignedUrl(userId, todoId, url){
+  await addImageDB(userId, todoId,url);
  
 }
